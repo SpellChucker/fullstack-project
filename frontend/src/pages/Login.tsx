@@ -9,7 +9,7 @@ import * as Cookies from 'js-cookie';
 import imageService from '../services/image';
 import { updateToken } from '../store/auth/actions';
 
-const Login: React.FC = () => {
+const Login: React.FC<any> = ({ pageName }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setError] = useState('')
@@ -19,22 +19,36 @@ const Login: React.FC = () => {
   const login = async (ev: any) => {
     ev.preventDefault();
     try {
-      const { data } = await imageService.post('/authenticate', {
-        email,
-        password
-      });
+      let resp;
+      if (pageName === 'Login') {
+        const { data } = await imageService.post('/authenticate', {
+          email,
+          password
+        });
 
-      dispatch(updateToken(data.token));
-      Cookies.set('userToken', data.token);
+        resp = data;
+      } else {
+        const { data } = await imageService.post('/register', {
+          email,
+          password
+        });
+
+        resp = data;
+      }
+
+      dispatch(updateToken(resp.token));
+      Cookies.set('userToken', resp.token);
       history.push('/home');
     } catch ({ response }) {
-      setError('Invalid login');
+      setError(response.data.error.user_authentication || response.data.error);
     }
   }
 
   return (
     <Container className="mt-4">
-      {errorMessage &&
+      <h2>{pageName}</h2>
+      {
+        errorMessage &&
         <Alert variant="danger">{errorMessage}</Alert>
       }
       <Form onSubmit={login}>

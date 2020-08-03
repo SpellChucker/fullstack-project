@@ -24,11 +24,21 @@ const Header = (props: any) => {
   return (
     <Navbar bg="light" variant="light">
       <Navbar.Brand href="#home">Giphy Search</Navbar.Brand>
-      <Nav activeKey={location.pathname} className="mr-auto">
-        <Nav.Link href="/home">Home</Nav.Link>
-        <Nav.Link href="/favorites">Favorites</Nav.Link>
-      </Nav>
-      { token && <Nav.Link onClick={logout}>Log Out</Nav.Link> }
+      { token &&
+        <>
+          <Nav activeKey={location.pathname} className="mr-auto">
+            <Nav.Link href="/home">Home</Nav.Link>
+            <Nav.Link href="/favorites">Favorites</Nav.Link>
+          </Nav>
+          <Nav.Link onClick={logout}>Log Out</Nav.Link>
+        </>
+      }
+      { !token &&
+        <Nav activeKey={location.pathname} className="mr-auto">
+          <Nav.Link href="/login">Login</Nav.Link>
+          <Nav.Link href="/register">Register</Nav.Link>
+        </Nav>
+      }
     </Navbar>
   );
 };

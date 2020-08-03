@@ -13,6 +13,7 @@ import AuthenticatedRoute from './routes/AuthenticatedRoute';
 import Login from './pages/Login';
 import { useDispatch } from 'react-redux';
 import { updateToken } from './store/auth/actions';
+import HeaderWithRouter from './components/Header';
 
 const App: React.FC = () => {
   const dispatch = useDispatch();
@@ -25,6 +26,7 @@ const App: React.FC = () => {
   return (
     <div className="app">
       <Router>
+        <HeaderWithRouter />
         <Switch>
           <AuthenticatedRoute path="/home">
             <Home />
@@ -32,7 +34,12 @@ const App: React.FC = () => {
           <AuthenticatedRoute path="/favorites">
             <Favorites />
           </AuthenticatedRoute>
-          <Route path="/login" exact component={Login} />
+          <Route path="/login">
+            <Login pageName="Login" />
+          </Route>
+          <Route path="/register">
+            <Login pageName="Register" />
+          </Route>
         </Switch>
       </Router>
     </div>
