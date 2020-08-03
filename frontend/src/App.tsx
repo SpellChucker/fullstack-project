@@ -1,24 +1,47 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch
+} from 'react-router-dom';
+import * as Cookies from 'js-cookie';
+import Home from './pages/Home';
+import Favorites from './pages/Favorites';
+import AuthenticatedRoute from './routes/AuthenticatedRoute';
+import Login from './pages/Login';
+import { useDispatch } from 'react-redux';
+import { updateToken } from './store/auth/actions';
+import HeaderWithRouter from './components/Header';
 
-function App() {
+const App: React.FC = () => {
+  const dispatch = useDispatch();
+  const token = Cookies.get('userToken');
+
+  if (token) {
+    dispatch(updateToken(token));
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      <Router>
+        <HeaderWithRouter />
+        <Switch>
+          <AuthenticatedRoute path="/home">
+            <Home />
+          </AuthenticatedRoute>
+          <AuthenticatedRoute path="/favorites">
+            <Favorites />
+          </AuthenticatedRoute>
+          <Route path="/login">
+            <Login pageName="Login" />
+          </Route>
+          <Route path="/register">
+            <Login pageName="Register" />
+          </Route>
+        </Switch>
+      </Router>
     </div>
   );
 }
